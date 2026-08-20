@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>我餓了｜TAIPEI DEPARTURE BOARD</title>
+<style>
+  :root{
+    --paper:#f7f3ea;
+    --ink:#1e2728;
+    --muted:#687274;
+    --line:#aeb6b4;
+    --accent:#e85d4a;
+    --accent2:#f3c86b;
+    --card:#fffdf7;
+    --shadow:0 12px 35px rgba(25,35,35,.10);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 15% 10%, rgba(243,200,107,.20), transparent 28%),
+      linear-gradient(135deg,#f8f5ed,#eef1ee);
+    font-family:Inter,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  }
+  button{font:inherit}
+  .wrap{width:min(1120px,92vw);margin:32px auto 56px}
+  .boarding{
+    position:relative;
+    overflow:hidden;
+    background:var(--card);
+    border:1px solid #d6d8d2;
+    border-radius:24px;
+    box-shadow:var(--shadow);
+  }
+  .boarding:before,.boarding:after{
+    content:"";
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:18px;
+    background:repeating-linear-gradient(
+      to bottom,transparent 0 14px,var(--paper) 14px 22px
+    );
+    opacity:.9;
+  }
+  .boarding:before{left:-9px}
+  .boarding:after{right:-9px}
+  .top{
+    padding:34px 48px 26px;
+    border-bottom:1px dashed var(--line);
+  }
+  .eyebrow{
+    letter-spacing:.22em;
+    font-weight:800;
+    font-size:.82rem;
+    color:#5d6869;
+  }
+  h1{
+    margin:10px 0 4px;
+    font-size:clamp(2.6rem,7vw,5.8rem);
+    line-height:.95;
+    letter-spacing:-.05em;
+  }
+  .subtitle{
+    margin:0;
+    font-size:1.08rem;
+    color:var(--muted);
+  }
+  .flight{
+    display:grid;
+    grid-template-columns:1fr 1.15fr 1fr;
+    gap:20px;
+    padding:28px 48px;
+    border-bottom:1px dashed var(--line);
+  }
+  .field{min-width:0}
+  .label{
+    font-size:.72rem;
+    font-weight:800;
+    letter-spacing:.15em;
+    color:#788181;
+    margin-bottom:7px;
+  }
+  .value{
+    font-size:1.25rem;
+    font-weight:800;
+  }
+  .route{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .route-line{
+    height:1px;
+    flex:1;
+    background:repeating-linear-gradient(to right,var(--ink) 0 7px,transparent 7px 13px);
+  }
+  .details{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    padding:22px 48px 28px;
+  }
+  .stamp{
+    border:1px solid #d7d9d4;
+    border-radius:14px;
+    padding:14px 16px;
+    background:#fff;
+  }
+  .stamp strong{display:block;font-size:.75rem;letter-spacing:.12em;color:#777}
+  .stamp span{display:block;margin-top:6px;font-weight:800}
+  .selector{
+    margin-top:26px;
+    background:rgba(255,253,247,.88);
+    border:1px solid #d6d8d2;
+    border-radius:24px;
+    box-shadow:var(--shadow);
+    padding:30px;
+  }
+  .selector-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    gap:20px;
+    margin-bottom:22px;
+  }
+  h2{margin:0;font-size:1.5rem}
+  .hint{margin:5px 0 0;color:var(--muted)}
+  .random{
+    border:0;
+    border-radius:999px;
+    background:var(--ink);
+    color:#fff;
+    padding:12px 18px;
+    cursor:pointer;
+    font-weight:800;
+    transition:.2s transform,.2s background;
+  }
+  .random:hover{transform:translateY(-2px);background:#344042}
+  .random:active{transform:translateY(0)}
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+  }
+  .card{
+    appearance:none;
+    text-align:left;
+    width:100%;
+    border:1px solid #d8dbd6;
+    background:#fff;
+    border-radius:18px;
+    padding:22px;
+    cursor:pointer;
+    transition:.2s transform,.2s box-shadow,.2s border-color;
+  }
+  .card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 24px rgba(25,35,35,.08);
+    border-color:#aeb6b4;
+  }
+  .tag{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:999px;
+    background:#f4e5c2;
+    font-size:.7rem;
+    font-weight:900;
+    letter-spacing:.08em;
+  }
+  .card h3{margin:13px 0 5px;font-size:1.35rem}
+  .card p{margin:0;color:var(--muted);line-height:1.7}
+  .result{
+    margin-top:18px;
+    min-height:58px;
+    padding:14px 16px;
+    border-radius:14px;
+    background:#f3f0e7;
+    color:#445052;
+    display:flex;
+    align-items:center;
+    font-weight:700;
+  }
+  footer{
+    text-align:center;
+    color:#7a8383;
+    font-size:.78rem;
+    letter-spacing:.08em;
+    margin-top:22px;
+  }
+  @media(max-width:760px){
+    .wrap{width:94vw;margin-top:16px}
+    .top,.flight,.details{padding-left:24px;padding-right:24px}
+    .flight,.details,.cards{grid-template-columns:1fr}
+    .selector{padding:22px}
+    .selector-head{align-items:flex-start;flex-direction:column}
+    .random{width:100%}
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="boarding" aria-label="登機證">
+    <div class="top">
+      <div class="eyebrow">BOARDING PASS</div>
+      <h1>我餓了</h1>
+      <p class="subtitle">今天，你要飛去哪一餐？</p>
+    </div>
+
+    <div class="flight">
+      <div class="field">
+        <div class="label">DATE</div>
+        <div class="value" id="date">—</div>
+      </div>
+
+      <div class="field">
+        <div class="label">FROM</div>
+        <div class="route">
+          <div class="value">空腹</div>
+          <div class="route-line"></div>
+          <div class="value">A1 ✈︎</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label">TO</div>
+        <div class="value">飽足</div>
+      </div>
+    </div>
+
+    <div class="details">
+      <div class="stamp"><strong>GATE</strong><span>A1</span></div>
+      <div class="stamp"><strong>FLIGHT</strong><span>BRK-2026</span></div>
+      <div class="stamp"><strong>BOARDING TIME</strong><span>06:00 – 10:30</span></div>
+      <div class="stamp"><strong>PASSENGER</strong><span>你</span></div>
+    </div>
+  </section>
+
+  <section class="selector">
+    <div class="selector-head">
+      <div>
+        <h2>SELECT YOUR GATE — 選擇這一餐</h2>
+        <p class="hint">挑一個目的地，開始今天的早餐登機。</p>
+      </div>
+      <button class="random" id="randomBtn">● 手氣不錯・隨機登機蓋章 ●</button>
+    </div>
+
+    <div class="cards">
+      <button class="card" data-choice="台灣早餐">
+        <span class="tag">MAIN CABIN</span>
+        <h3>🇹🇼 台灣・早餐</h3>
+        <p>熟悉的台灣早餐，從熱騰騰的一餐開始今天。</p>
+      </button>
+
+      <button class="card" data-choice="世界美食">
+        <span class="tag">INTL TERMINAL</span>
+        <h3>🌍 世界美食・轉機櫃檯</h3>
+        <p>選一個國家，看看他們的「早餐」都吃什麼。</p>
+      </button>
+    </div>
+
+    <div class="result" id="result">護照 · 蓋章紀錄：尚未選擇目的地</div>
+  </section>
+
+  <footer>我餓了 · TAIPEI DEPARTURE BOARD · 祝旅途「吃」好每一餐</footer>
+</main>
+
+<script>
+  const dateEl = document.getElementById("date");
+  const result = document.getElementById("result");
+  const cards = [...document.querySelectorAll(".card")];
+  const randomBtn = document.getElementById("randomBtn");
+
+  const now = new Date();
+  dateEl.textContent = now.toLocaleDateString("zh-TW", {
+    year:"numeric", month:"2-digit", day:"2-digit"
+  });
+
+  function board(choice){
+    result.textContent = `護照 · 蓋章紀錄：已蓋章「${choice}」 ✈︎ 祝你吃得開心！`;
+  }
+
+  cards.forEach(card => {
+    card.addEventListener("click", () => board(card.dataset.choice));
+  });
+
+  randomBtn.addEventListener("click", () => {
+    const pick = cards[Math.floor(Math.random() * cards.length)];
+    board(pick.dataset.choice);
+  });
+</script>
+</body>
+</html>
